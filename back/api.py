@@ -28,21 +28,17 @@ def upload_file():
 
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
-    print(f"Imagen guardada en: {file_path}")
+    print(f"Image saved {file_path}")
 
-    # MODELO HACE SUS COSAS
-    # 1. Preprocesamos la imagen
-    img = recortar_imagen(file_path) 
+    img = preprocess_image(file_path) 
 
-    # 2. Recuperamos modelo
     model = tf.keras.models.load_model("./models/Model1.h5")
 
-    # 3. Hacemos y recuperamos predicción
-    enfermedad, probabilidad = make_prediction(img, model)
+    disease, probability = make_prediction(img, model)
 
-    # Respuesta al frontend
     return jsonify({
-        'message': f"Tienes \"{enfermedad}\" con una probabilidad de {probabilidad*100:.2f}%",
+        'disease': disease,
+        'probability': f" {probability*100:.2f}%"
     }), 200
 
 
